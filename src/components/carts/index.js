@@ -15,7 +15,6 @@ module.exports = (app) => {
     try {
       const params = req.params;
       const cartId = await cartController.getCartById(params);
-      console.log(cartId);
       res.status(200).render('cartView', { cart: cartId });
     } catch (error) {
       res.status(500).send(error);

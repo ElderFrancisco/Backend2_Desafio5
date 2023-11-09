@@ -27,7 +27,6 @@ class CartManagerDb {
         .populate('products.product')
         .lean();
 
-      console.log(existCart);
       if (existCart) {
         return existCart;
       } else {
