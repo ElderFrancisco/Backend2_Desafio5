@@ -1,14 +1,19 @@
 //
 //
+const { json } = require('body-parser');
 const ProductManagerDb = require('../../dao/managersDb/ProductManagerDb');
 const productController = new ProductManagerDb();
 
 module.exports = (app) => {
   app.get('/', async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit);
-      const productsList = await productController.getProducts(limit);
-      res.render('home', { productsList });
+      const currentPath = req.originalUrl;
+      const params = req.query;
+      const productsList = await productController.getProducts(
+        params,
+        currentPath,
+      );
+      res.render('home', { products: productsList });
     } catch (error) {
       console.log(error);
     }

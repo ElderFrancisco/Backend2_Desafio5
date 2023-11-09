@@ -13,23 +13,88 @@ const allowedFields = [
 class ProductManagerDb {
   constructor() {}
 
-  async getProducts(limit) {
+  async getProducts(params, url) {
     try {
-      const estimated = await productModel.countDocuments();
-      if (estimated === 0) {
-        return null;
-      }
+      const currentPath = url;
+      const index = currentPath.indexOf('?');
 
-      if (limit) {
-        const productsListLimit = await productModel.find().limit(limit);
-        return productsListLimit;
-      } else {
-        const productsListLimit = await productModel.find().limit(limit);
-        return productsListLimit;
-      }
+      const pathUrl = (() => {
+        if (index !== -1) {
+          const a = currentPath.substring(0, index);
+          return a;
+        } else {
+          return currentPath;
+        }
+      })();
+
+      const limit = parseInt(params.limit) || 10;
+      const pageQ = params.page || 1;
+      const query = params.query || null;
+      const sort = params.sort || null;
+
+      const parsedQuery = (() => {
+        try {
+          return JSON.parse(query);
+        } catch (error) {
+          return null;
+        }
+      })();
+
+      const parsedSort = (() => {
+        try {
+          return JSON.parse(sort);
+        } catch (error) {
+          return null;
+        }
+      })();
+
+      const productsListLimit = await productModel.paginate(parsedQuery, {
+        limit: limit,
+        page: pageQ,
+        sort: parsedSort,
+        lean: true,
+      });
+      const urlPrev = `http://localhost:8080${pathUrl}?limit=${
+        productsListLimit.limit
+      }&page=${productsListLimit.page - 1}&query=${
+        query != null ? query : null
+      }&sort=${sort != null ? sort : null}`;
+
+      const urlNext = `http://localhost:8080${pathUrl}?limit=${
+        productsListLimit.limit
+      }&page=${productsListLimit.page + 1}&query=${
+        query != null ? query : null
+      }&sort=${sort != null ? sort : null}`;
+      const result = {
+        status: 'success',
+        payload: productsListLimit.docs,
+        totalPages: productsListLimit.totalPages,
+        prevPage: productsListLimit.prevPage,
+        nextPage: productsListLimit.nextPage,
+        page: productsListLimit.page,
+        hasPrevPage: productsListLimit.hasPrevPage,
+        hasNextPage: productsListLimit.hasNextPage,
+        prevLink: productsListLimit.hasPrevPage == true ? urlPrev : null,
+        nextLink: productsListLimit.hasNextPage == true ? urlNext : null,
+      };
+
+      return result;
     } catch (error) {
       console.log(error);
-      return error;
+      const result = {
+        status: 'error',
+        payload: productsListLimit.docs,
+        totalPages: productsListLimit.totalDocs,
+        prevPage: productsListLimit.prevPage,
+        nextPage: productsListLimit.nextPage,
+        page: productsListLimit.page,
+        hasPrevPage: productsListLimit.hasPrevPage,
+        hasNextPage: productsListLimit.hasNextPage,
+        prevLink: productsListLimit.hasPrevPage == true ? urlPrev : null,
+        nextLink: productsListLimit.hasNextPage == true ? urlNext : null,
+      };
+
+      return result;
     }
   }
 
