@@ -6,11 +6,15 @@ const exphbs = require('express-handlebars');
 const utilSocket = require('./util/socket');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 3000;
+    this.mongoUrl = process.env.MONGO_URL;
+    this.mongoName = process.env.MONGO_NAME;
     this.settings();
     this.routes();
     this.server = http.createServer(this.app);
@@ -27,11 +31,23 @@ class Server {
     this.app.set('view engine', 'handlebars');
     this.app.set('views', __dirname + '/views');
     this.app.use(express.static(__dirname + 'public'));
+    this.app.use(
+      session({
+        store: MongoStore.create({
+          mongoUrl: this.mongoUrl,
+          dbName: this.mongoName,
+          ttl: 1100, //tiempo de vida de la sesion
+        }),
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true,
+      }),
+    );
   }
 
   connect() {
     mongoose
-      .connect(process.env.MONGO_URL, { dbName: 'ecommerce' })
+      .connect(this.mongoUrl, { dbName: this.mongoName })
       .then(() => {
         console.log('db connected');
       })

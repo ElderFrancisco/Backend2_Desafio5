@@ -1,11 +1,13 @@
-//
-//
-const { json } = require('body-parser');
 const ProductManagerDb = require('../../dao/managersDb/ProductManagerDb');
 const productController = new ProductManagerDb();
+const { Router } = require('express');
 
 module.exports = (app) => {
-  app.get('/', async (req, res) => {
+  let router = new Router();
+
+  app.use('/websocket', router);
+
+  router.get('/', async (req, res) => {
     try {
       const currentPath = req.originalUrl;
       const params = req.query;
@@ -13,13 +15,13 @@ module.exports = (app) => {
         params,
         currentPath,
       );
-      res.render('home', { products: productsList });
+      res.render('products', { products: productsList });
     } catch (error) {
       console.log(error);
     }
   });
 
-  app.get('/realtimeproducts', async (req, res) => {
+  router.get('/realtimeproducts', async (req, res) => {
     try {
       res.render('realTimeProducts');
     } catch (error) {
@@ -28,7 +30,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get('/chat', async (req, res) => {
+  router.get('/chat', async (req, res) => {
     try {
       res.render('chat');
     } catch (error) {

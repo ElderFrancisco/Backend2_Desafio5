@@ -31,7 +31,6 @@ class CartManager {
       fs.writeFileSync(this.path, text, (error) =>
         console.log(`error al escribir addProduct ${error}`),
       );
-      console.log(cart);
       return cart;
     } catch (error) {
       console.log(error);
@@ -45,7 +44,6 @@ class CartManager {
         return null;
       } else {
         let text = JSON.stringify(cartExistent, null, 2);
-        console.log(cartExistent);
         return text;
       }
     } catch (error) {
@@ -73,19 +71,16 @@ class CartManager {
   updateCart(cid, pid) {
     try {
       const selectedCartIndex = this.carts.findIndex((cart) => cart.id === cid);
-      console.log(selectedCartIndex);
       if (selectedCartIndex === -1) {
         return res
           .status(404)
           .send(`No se encontró ningún carrito con el ID proporcionado.`);
       }
       const selectedCart = this.carts[selectedCartIndex];
-      console.log(selectedCart);
 
       const selectedProduct = selectedCart.products.find(
         (cart) => cart.id === pid,
       );
-      console.log(selectedProduct);
       if (selectedProduct) {
         selectedProduct.quantity += 1;
       } else {

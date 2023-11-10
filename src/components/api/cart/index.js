@@ -13,10 +13,7 @@ module.exports = (app) => {
 
   router.post('/', async (req, res) => {
     try {
-      console.log('lo que me req' + req);
-
       const body = req.body;
-      console.log('lo que me llega' + body);
       const cart = await cartController.createNewCart(body);
       res.status(200).send(cart);
     } catch (error) {
@@ -73,7 +70,6 @@ module.exports = (app) => {
     try {
       const params = req.params;
       const body = req.body;
-      console.log(body);
       const updatedCart = await cartController.addProdcutBodyCart(params, body);
       res.status(200).send(updatedCart);
     } catch (error) {
@@ -86,7 +82,6 @@ module.exports = (app) => {
     try {
       const params = req.params;
       const body = req.body;
-      console.log(body);
       const updatedCart = await cartController.addProdcutBodyCart(params, body);
       res.status(200).send(updatedCart);
     } catch (error) {

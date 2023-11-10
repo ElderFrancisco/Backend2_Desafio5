@@ -1,1 +1,5 @@
 node_modules
+.prettierignore
+carrito.json
+orden.txt
+productos.json

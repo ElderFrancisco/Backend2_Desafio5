@@ -6,7 +6,6 @@ class CartManagerDb {
 
   async createNewCart(body) {
     try {
-      console.log(body);
       const products = Array.isArray(body.products) ? body.products : [];
       const cart = {
         products,
@@ -95,7 +94,6 @@ class CartManagerDb {
       const indexProduct = cartToUpdate.products.findIndex((product) => {
         return product.product == pid;
       });
-      console.log(indexProduct);
       if (indexProduct >= 0) {
         cartToUpdate.products.splice(indexProduct, 1);
       } else {
@@ -146,7 +144,6 @@ class CartManagerDb {
           cartToUpdate.products[indexProduct].quantity += quantityBody;
         }
       }
-      console.log(cartToUpdate);
       const result = await cartModel.updateOne({ _id: cid }, cartToUpdate);
 
       return result;
@@ -169,7 +166,6 @@ class CartManagerDb {
         return res.status(401).send('no se encontro el carrito');
       }
       cartToEmpty.products = [];
-      console.log(cartToEmpty);
 
       const result = await cartModel.updateOne({ _id: cid }, cartToEmpty);
 

@@ -100,7 +100,7 @@ class ProductManagerDb {
 
   async getProductById(id) {
     try {
-      const existProduct = await productModel.findById(id).lean();
+      const existProduct = await productModel.findOne({ _id: id }).lean();
       return existProduct;
     } catch (error) {
       console.log(error);
@@ -118,16 +118,6 @@ class ProductManagerDb {
       const stock = body.stock;
       const category = body.category;
       const status = body.status === false ? false : true;
-
-      // lo comente yaque en el model pongo como unique:true el code
-
-      //const existCode = await productModel.findOne({ code: code });
-      //   if (existCode) {
-      //     console.log(
-      //       `El código ${code} coincide con el código ya existente de ${existCode.title}, para agregar el producto debera cambiar su code:${code}`,
-      //     );
-      //     return null;
-      //   }
 
       if (!title || !description || !price || !category || !code || !stock) {
         console.log(

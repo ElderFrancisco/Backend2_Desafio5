@@ -1,1 +1,1 @@
-require('./src/index.js').listen();
+require('./src/app.js').listen();

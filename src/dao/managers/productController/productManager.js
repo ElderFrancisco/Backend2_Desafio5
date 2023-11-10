@@ -128,7 +128,6 @@ class ProductManager {
           }
         },
       );
-      console.log(product);
       return product;
     } catch (error) {
       console.log(error);
